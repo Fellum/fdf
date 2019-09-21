@@ -23,10 +23,11 @@ t_map		*read_map(char *fname);
 void	update_matrix(t_gparams *data)
 {
 	drop_matrix(data->tf_matrix);
+	add_scaling(data->tf_matrix, data->xy_scale, data->xy_scale, data->z_scale);
+
 	add_xrotation(data->tf_matrix, data->x_angle);
 	add_yrotation(data->tf_matrix, data->y_angle);
-	add_zrotation(data->tf_matrix, data->z_angle);
-	add_scaling(data->tf_matrix, data->xy_scale, data->xy_scale, data->z_scale);
+	//add_zrotation(data->tf_matrix, data->z_angle);
 
 	//add_translation(data->tf_matrix, data->x_transl, data->y_transl, data->z_transl);
 }
@@ -65,6 +66,8 @@ void	draw_map(t_canvas *canv, t_gparams *data, int color)
 char X_DIR;
 char Y_DIR;
 char Z_DIR;
+float ZSC_DIR;
+float XYSC_DIR;
 //----------------GLOBAL_SHIT---------------
 //----------------EVENTS--------------------
 
@@ -82,6 +85,14 @@ int	key_press(int keycode, void *param)
 		Z_DIR = -1;
 	if (keycode == 14)
 		Z_DIR = 1;
+	if (keycode == 24)
+		ZSC_DIR = 1.1;
+	if (keycode == 27)
+		ZSC_DIR = 0.9;
+	if (keycode == 33)
+		XYSC_DIR = 1.1;
+	if (keycode == 30)
+		XYSC_DIR = 0.9;
 	return (0);
 }
 
@@ -99,6 +110,14 @@ int	key_release(int keycode, void *param)
 		Z_DIR = 0;
 	if (keycode == 14)
 		Z_DIR = 0;
+	if (keycode == 24)
+		ZSC_DIR = 0;
+	if (keycode == 27)
+		ZSC_DIR = 0;
+	if (keycode == 33)
+		XYSC_DIR = 0;
+	if (keycode == 30)
+		XYSC_DIR = 0;
 }
 
 int mouse_move(int x, int y, void *param)
@@ -122,6 +141,8 @@ int draw_tick(t_gparams *param)
 	param->x_angle += 2 * X_DIR;
 	param->y_angle += 2 * Y_DIR;
 	param->z_angle += 2 * Z_DIR;
+	param->z_scale = ZSC_DIR == 0 ? param->z_scale : param->z_scale * ZSC_DIR;
+	param->xy_scale = XYSC_DIR == 0 ? param->xy_scale : param->xy_scale * XYSC_DIR;
 	update_matrix(param);
 	draw_map(param->canvas, param, 0xFFFFFF);
 	draw_canvas(param->canvas, 0, 0);

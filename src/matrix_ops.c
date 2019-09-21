@@ -5,13 +5,14 @@
 void	drop_matrix(double *matrix)
 {
 	int	curx;
-	int	cury;
 
 	ft_bzero(matrix,sizeof(double) * 16);
 	curx = 0;
-	cury = 0;
 	while (curx < 4)
-		matrix[curx++ + cury++ * 4] = 1;
+	{
+		matrix[curx + curx * 4] = 1;
+		curx++;
+	}
 }
 
 double	*init_matrix()
@@ -29,9 +30,9 @@ void 	calc_points(double *matrix, double *x, double *y, double *z)
 	double tmpy;
 	double tmpz;
 
-	tmpx = matrix[0] * *x - matrix[4] * *y + matrix[8] * *z; //+ matrix[12];
-	tmpy = -matrix[1] * *x + matrix[5] * *y - matrix[9] * *z;//+ matrix[13];
-	tmpz = matrix[2] * *x - matrix[6] * *y + matrix[10] * *z;//+ matrix[14];
+	tmpx = matrix[0] * *x - matrix[4] * *y + matrix[8] * *z + matrix[12];
+	tmpy = -matrix[1] * *x + matrix[5] * *y - matrix[9] * *z + matrix[13];
+	tmpz = matrix[2] * *x - matrix[6] * *y + matrix[10] * *z + matrix[14];
 	*x = tmpx;
 	*y = tmpy;
 	*z = tmpz;
@@ -89,11 +90,6 @@ void	add_yrotation(double *matrix, double angle)
 
 void	add_zrotation(double *matrix, double angle)
 {
-//	matrix[0] *= cos(TO_RAD(angle));
-//	matrix[1] *= -sin(TO_RAD(angle));
-//	matrix[4] *= sin(TO_RAD(angle));
-//	matrix[5] *= cos(TO_RAD(angle));
-
 	matrix[0] = fabs(matrix[0]) < DOUBLE_DELTA ? cos(TO_RAD(angle)): matrix[0] * cos(TO_RAD(angle));
 	matrix[1] = fabs(matrix[1]) < DOUBLE_DELTA ? -sin(TO_RAD(angle)) : matrix[1] * -sin(TO_RAD(angle));
 	matrix[4] = fabs(matrix[4]) < DOUBLE_DELTA ? sin(TO_RAD(angle)) : matrix[4] * sin(TO_RAD(angle));
