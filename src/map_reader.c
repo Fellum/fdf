@@ -9,15 +9,82 @@ void	raise_error()
 	exit(1);
 }
 
+int		ft_atoi_base(char *str)
+{
+	int res;
+	int i;
+	int j;
+	
+	i = 0;
+	res = 0;
+	j = 1;
+	while(str[i])
+		i++;
+	i--;
+	while(i >= 0)
+	{
+		if (str[i] >= 'A' && str[i] <= 'F')
+			res = res + (str[i] - 'A' + 10) * j;
+		else if (str[i] >= 'a' && str[i] <= 'f')
+			res = res + (str[i] - 'a' + 10) * j;
+		else if (str[i] >= '0' && str[i] <= '9')
+			res = res + (str[i] - '0') * j;
+		j = j * 16;
+		i--;
+	}
+	return (res);
+}
+
+int		colors(char *str)
+{
+	int i;
+	
+	i = 0;
+	if(*str == '0')
+		str++;
+	else
+		return(0);
+	if(*str == 'x')
+		str++;
+	else
+		return(0);
+	while(str[i])
+	{
+		if(!((str[i] >= 'A' && str[i] <= 'F') || (str[i] >= 'a' && str[i] <= 'f') || (str[i] >= '0' && str[i] <= '9')))
+			return (0);
+		i++;
+	}
+	if(i > 8)
+		return(0);
+	return(ft_atoi_base(str));
+}
+
 int 	is_all_digits(char *str)
 {
-	while (*str)
+	int i;
+	int res;
+
+	res = 0;
+	i = 0;
+	if(str[0] == '-')
 	{
-		if ((*str < '0' || *str > '9') && *str != '-')
+		if(str[1] >= '0' && str[1] <= '9')
+			i = 2;
+		else
 			return (0);
-		str++;
 	}
-	return (1);
+	while (str[i] >= '0' && str[i] <= '9')
+		i++;
+	if(str[i] == '\0')
+		return (0xFFFFFF);
+	if(str[i] == ',')
+	{
+		res = colors(str + i + 1);
+			return (res);
+	}
+	else
+		return(0);
+	return (0xFFFFFF);
 }
 
 size_t	calc_words(char const *s, char c)
@@ -48,7 +115,11 @@ void	calc_sizes(char *fname, int *cols, int *rows)
 
 	if ((fd = open(fname, O_RDONLY)) < 0)
 		raise_error();
-	ft_get_next_line(fd, &line);
+	if (ft_get_next_line(fd, &line) != GNL_SUCCESS)
+		raise_error();
+	if(ft_strlen(line) == 0)
+		raise_error();
+	//ft_get_next_line(fd, &line);
 	*cols = calc_words(line, ' ');
 	*rows = 1;
 	while (ft_get_next_line(fd, &line) == GNL_SUCCESS)
@@ -78,34 +149,40 @@ void	fill_row(t_map *res, char *line, int cur_row)
 {
 	char **tmp;
 	int cur;
+	int color;
 
 	tmp = ft_strsplit(line, ' ');
 	cur = 0;
 	while (tmp[cur])
 	{
-		if (!is_all_digits(tmp[cur]))
+		if (!(color = is_all_digits(tmp[cur])))
 			raise_error();
 		if (cur >= res->colls)
 			raise_error();
 		res->map[cur_row][cur].z = ft_atoi(tmp[cur]);
 		res->map[cur_row][cur].x = cur;
 		res->map[cur_row][cur].y = cur_row;
-		res->map[cur_row][cur].color = 0xFFFFFF;
+		res->map[cur_row][cur].color = color;
 		cur++;
 	}
 }
 
-void	fill_map(char *fname, t_map *res)
+void	fill_map(char *fname, t_map *res, int cols)
 {
 	int	fd;
 	char *line;
 	int	cur_row;
+	int count;
 
 	if ((fd = open(fname, O_RDONLY)) < 0)
 		raise_error();
 	cur_row = 0;
 	while (ft_get_next_line(fd, &line) == GNL_SUCCESS)
 	{
+		//one_space(line);
+		count = calc_words(line, ' ');
+		if(count != cols)
+			raise_error();
 		fill_row(res, line, cur_row);
 		free(line);
 		cur_row++;
@@ -120,6 +197,6 @@ t_map	*read_map(char *fname)
 	int row_len;
 	calc_sizes(fname, &col_len, &row_len);
 	res = init_map(col_len, row_len);
-	fill_map(fname, res);
+	fill_map(fname, res, col_len);
 	return (res);
 }
