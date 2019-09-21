@@ -11,7 +11,6 @@
 typedef struct	s_map
 {
 	t_point	**map;
-	t_point center;
 	int		colls;
 	int		rows;
 }				t_map;
@@ -23,6 +22,7 @@ typedef struct	s_gparams
 	t_map		*map;
 	int			height;
 	int 		width;
+	char		proj_type;
 	double 		x_angle;
 	double	 	y_angle;
 	double 		z_angle;
@@ -40,5 +40,11 @@ t_gparams	*prepare_params(t_map *map);
 
 # define W_WIDTH 1366
 # define W_HEIGHT 768
+
+#define ISO_PROJECTION 0
+#define XY_PROJECTION 1
+#define YZ_PROJECTION 2
+#define XZ_PROJECTION 3
+
 # define DOUBLE_DELTA 0.000001
 #endif //FDF_PARAMS_H

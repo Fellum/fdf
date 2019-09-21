@@ -62,12 +62,27 @@ void	draw_map(t_canvas *canv, t_gparams *data, int color)
 		cur_coll++;
 	}
 }
+
+void	drop_params(t_gparams *data)
+{
+	data->x_transl = data->width / 2;
+	data->y_transl = data->height / 2;
+	data->xy_scale = data->width / data->map->colls / 2;
+	data->z_scale = 1;
+	data->proj_type = ISO_PROJECTION;
+	data->x_angle = 0;
+	data->y_angle = 0;
+	data->z_angle = 0;
+}
+
 //----------------GLOBAL_SHIT---------------
 char X_DIR;
 char Y_DIR;
 char Z_DIR;
 float ZSC_DIR;
 float XYSC_DIR;
+char IS_DROP;
+char PROJ_TYPE = ISO_PROJECTION;
 //----------------GLOBAL_SHIT---------------
 //----------------EVENTS--------------------
 
@@ -93,6 +108,12 @@ int	key_press(int keycode, void *param)
 		XYSC_DIR = 1.1;
 	if (keycode == 30)
 		XYSC_DIR = 0.9;
+	if (keycode == 18)
+		IS_DROP = 1;
+	if (keycode == 19)
+		PROJ_TYPE = XY_PROJECTION;
+	if (keycode == 20)
+		PROJ_TYPE = ISO_PROJECTION;
 	return (0);
 }
 
@@ -138,6 +159,12 @@ int mouse_press(int button, int x, int y, void *param)
 
 int draw_tick(t_gparams *param)
 {
+	if (IS_DROP)
+	{
+		drop_params(param);
+		IS_DROP = 0;
+	}
+	param->proj_type = PROJ_TYPE;
 	param->x_angle += 2 * X_DIR;
 	param->y_angle += 2 * Y_DIR;
 	param->z_angle += 2 * Z_DIR;

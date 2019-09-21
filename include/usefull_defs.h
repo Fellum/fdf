@@ -18,4 +18,10 @@ void setTimeout(int milliseconds);
 
 #define EXIT_HOOK 17
 
+
+#define ISO_PROJECTION 0
+#define XY_PROJECTION 1
+#define YZ_PROJECTION 2
+#define XZ_PROJECTION 3
+
 #endif //FDF_USEFULL_DEFS_H

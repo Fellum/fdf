@@ -10,12 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mlx.h"
-#include "../include/point.h"
-#include "../include/canvas.h"
-#include <math.h>
+#include "point.h"
+#include "canvas.h"
 #include "params.h"
-#include "matrix_ops.h"
 
 int	abs(int x)
 {
@@ -49,36 +46,7 @@ void draw_line_2d(t_canvas *canv, int x1, int y1, int x2, int y2, int color) {
 
 }
 
-void	calc_2d_point(int *x, int *y, t_point *point, double *matrix, t_gparams *data) {
-	double tmpx;
-	double tmpy;
-	double tmpz;
-
-	double tmp;
-
-	tmpx = point->x;
-	tmpy = point->y;
-	tmpz = point->z;
-
-	calc_points(matrix, &tmpx, &tmpy, &tmpz);
-
-	tmp = tmpx * cos(TO_RAD(data->z_angle)) - tmpy * sin(TO_RAD(data->z_angle));
-	tmpy = tmpx * sin(TO_RAD(data->z_angle)) + tmpy * cos(TO_RAD(data->z_angle));
-	tmpx = tmp;
-
-	*x = (int)((tmpx + tmpy) * cos(0.523599)) + 1366 / 2;
-	*y = (int)(-tmpz + (tmpx - tmpy) * sin(0.523599)) + 768 / 2;
-//
-//	*x = tmpx + 1366 / 2;
-//	*y = tmpy + 768 / 2;
-
-//	*x = tmpx + 1366 / 2;
-//	*y = tmpz + 768 / 2;
-//
-//	*x = tmpy + 1366 / 2;
-//	*y = tmpz + 768 / 2;
-
-}
+void	project_point(int *x, int *y, t_point *point, t_gparams *data);
 
 void	draw_line(t_gparams *data, t_point *from, t_point *to)
 {
@@ -87,8 +55,8 @@ void	draw_line(t_gparams *data, t_point *from, t_point *to)
 	int x2;
 	int	y2;
 
-	calc_2d_point(&x1, &y1, from, data->tf_matrix, data);
-	calc_2d_point(&x2, &y2, to, data->tf_matrix, data);
+	project_point(&x1, &y1, from, data);
+	project_point(&x2, &y2, to, data);
 
 	draw_line_2d(data->canvas, x1, y1, x2, y2, 0xFFFFFF);
 }

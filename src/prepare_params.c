@@ -37,6 +37,7 @@ t_gparams	*prepare_params(t_map *map)
 	res->y_transl = res->height / 2;
 	res->xy_scale = res->width / map->colls / 2;
 	res->z_scale = 1;
+	res->proj_type = ISO_PROJECTION;
 	translate_map(res);
 	res->tf_matrix = init_matrix();
 	return (res);
