@@ -1,13 +1,7 @@
 #include <fcntl.h>
 #include "ft_get_next_line.h"
 #include "point.h"
-
-typedef struct	s_map
-{
-	t_point	**map;
-	int		colls;
-	int		rows;
-}				t_map;
+#include "params.h"
 
 void	raise_error()
 {
@@ -93,14 +87,13 @@ void	fill_row(t_map *res, char *line, int cur_row)
 			raise_error();
 		if (cur >= res->colls)
 			raise_error();
-		res->map[cur_row][cur].z = ft_atoi(tmp[cur]) * 5;
-		res->map[cur_row][cur].x = cur * 5;
-		res->map[cur_row][cur].y = cur_row * 5;
-		res->map[cur_row][cur].color =(int)(res->map[cur_row][cur].z) * 50000;
+		res->map[cur_row][cur].z = ft_atoi(tmp[cur]);
+		res->map[cur_row][cur].x = cur;
+		res->map[cur_row][cur].y = cur_row;
+		res->map[cur_row][cur].color = 0xFFFFFF;
 		cur++;
 	}
 }
-
 
 void	fill_map(char *fname, t_map *res)
 {

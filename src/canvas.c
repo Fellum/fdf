@@ -20,7 +20,7 @@ t_canvas	*init_canvas(void *mlx, void *window, int width, int height)
 void		put_pixel(t_canvas *canv, int x, int y, int color)
 {
 	if (x >= 0 && x < canv->width && y >= 0 && y < canv->height)
-		(canv->img_data)[x + y * canv->height] = color;
+		(canv->img_data)[x + y * canv->width] = color;
 }
 
 void	ft_bzero(void *s, size_t n)

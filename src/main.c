@@ -8,79 +8,64 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <ft_printf_.h>
+#include "matrix_ops.h"
 
 
 #include "usefull_defs.h"
 #include "point.h"
 #include "canvas.h"
+#include "params.h"
 
-void		draw_line(t_canvas *canv, t_point *from, t_point *to, int color);
-typedef struct	s_map
-{
-	t_point	**map;
-	int		colls;
-	int		rows;
-}				t_map;
-
+void		draw_line(t_gparams *data, t_point *from, t_point *to);
 t_map		*read_map(char *fname);
 
-void	draw_map(t_canvas *canv, t_map *map, color)
+void	update_matrix(t_gparams *data)
+{
+	drop_matrix(data->tf_matrix);
+	add_xrotation(data->tf_matrix, data->x_angle);
+	add_yrotation(data->tf_matrix, data->y_angle);
+	add_zrotation(data->tf_matrix, data->z_angle);
+	add_scaling(data->tf_matrix, data->xy_scale, data->xy_scale, data->z_scale);
+
+	//add_translation(data->tf_matrix, data->x_transl, data->y_transl, data->z_transl);
+}
+
+void	draw_map(t_canvas *canv, t_gparams *data, int color)
 {
 	int cur_row;
 	int cur_coll;
+	t_point	**map;
 
+	map = data->map->map;
 	cur_row = 0;
-	while (cur_row < map->rows)
+	while (cur_row < data->map->rows)
 	{
 		cur_coll = 0;
-		while (cur_coll < map->colls - 1)
+		while (cur_coll < data->map->colls - 1)
 		{
-			draw_line(canv, map->map[cur_row] + cur_coll, map->map[cur_row] + cur_coll + 1, color);
+			draw_line(data, map[cur_row] + cur_coll, map[cur_row] + cur_coll + 1);
 			cur_coll++;
 		}
 		cur_row++;
 	}
 	cur_coll = 0;
-	while (cur_coll < map->colls)
+	while (cur_coll < data->map->colls)
 	{
 		cur_row = 0;
-		while (cur_row < map->rows - 1)
+		while (cur_row < data->map->rows - 1)
 		{
-			draw_line(canv, map->map[cur_row] + cur_coll, map->map[cur_row + 1] + cur_coll, color);
+			draw_line(data, map[cur_row] + cur_coll, map[cur_row + 1] + cur_coll);
 			cur_row++;
 		}
 		cur_coll++;
 	}
-
 }
-
-void	rotate_map(t_map *map, double angle, t_point *center, void (rot)(double, t_point *, t_point *))
-{
-	int cur_row;
-	int cur_coll;
-
-	cur_row = 0;
-	while (cur_row < map->rows)
-	{
-		cur_coll = 0;
-		while (cur_coll < map->colls)
-		{
-			rot(angle, map->map[cur_row] +cur_coll, center);
-			cur_coll++;
-		}
-		cur_row++;
-	}
-}
-
 //----------------GLOBAL_SHIT---------------
-void *mlx, *window;
-t_canvas	*ada;
 char X_DIR;
 char Y_DIR;
 char Z_DIR;
 //----------------GLOBAL_SHIT---------------
-
-
 //----------------EVENTS--------------------
 
 int	key_press(int keycode, void *param)
@@ -97,6 +82,7 @@ int	key_press(int keycode, void *param)
 		Z_DIR = -1;
 	if (keycode == 14)
 		Z_DIR = 1;
+	return (0);
 }
 
 int	key_release(int keycode, void *param)
@@ -131,25 +117,15 @@ int mouse_press(int button, int x, int y, void *param)
 	return (0);
 }
 
-int draw_tick(void *param)
+int draw_tick(t_gparams *param)
 {
-	t_point	center;
-
-	center.x = 250;
-	center.y = 250;
-	center.z = 0;
-
-	if (X_DIR)
-		rotate_map(param, X_DIR, &center, x_rotation);
-	if (Y_DIR)
-		rotate_map(param, Y_DIR, &center, y_rotation);
-	if (Z_DIR)
-		rotate_map(param, Z_DIR, &center, z_rotation);
-
-	draw_map(ada, (t_map *)param, 0xFFFFFF);
-	draw_canvas(ada, 0, 0);
-
-	setTimeout(10);
+	param->x_angle += 2 * X_DIR;
+	param->y_angle += 2 * Y_DIR;
+	param->z_angle += 2 * Z_DIR;
+	update_matrix(param);
+	draw_map(param->canvas, param, 0xFFFFFF);
+	draw_canvas(param->canvas, 0, 0);
+	//setTimeout(200);
 	return (0);
 }
 
@@ -161,34 +137,36 @@ int	close_event(void *param)
 
 //----------------EVENTS--------------------
 
-void	run_app(void *data)
+void	run_app(t_gparams *data)
 {
-	mlx = mlx_init();
-	window = mlx_new_window(mlx, 1000, 1000, "Title");
+	data->mlx = mlx_init();
+	data->wnd = mlx_new_window(data->mlx, data->width, data->height, "Title");
 
-	ada = init_canvas(mlx, window, 1000, 1000);
+	data->canvas = init_canvas(data->mlx, data->wnd, data->width, data->height);
 
-	mlx_hook(window, KEY_PRESS_HOOK, 0, key_press, NULL);
-	mlx_hook(window, KEY_RELEASE_HOOK, 0, key_release, NULL);
+	mlx_hook(data->wnd, KEY_PRESS_HOOK, 0, key_press, NULL);
+	mlx_hook(data->wnd, KEY_RELEASE_HOOK, 0, key_release, NULL);
 
-	mlx_hook(window, MOUSE_MOVE_HOOK, 0, mouse_move, NULL);
-	mlx_hook(window, MOUSE_RELEASE_HOOK, 0, mouse_release, NULL);
-	mlx_hook(window, MOUSE_PRESS_HOOK, 0, mouse_press, NULL);
+	mlx_hook(data->wnd, MOUSE_MOVE_HOOK, 0, mouse_move, NULL);
+	mlx_hook(data->wnd, MOUSE_RELEASE_HOOK, 0, mouse_release, NULL);
+	mlx_hook(data->wnd, MOUSE_PRESS_HOOK, 0, mouse_press, NULL);
 
-	mlx_hook(window, EXIT_HOOK, 0, close_event, NULL);
-	mlx_loop_hook(mlx, draw_tick, data);
+	mlx_hook(data->wnd, EXIT_HOOK, 0, close_event, NULL);
+	mlx_loop_hook(data->mlx, draw_tick, data);
 
-	mlx_loop(mlx);
+	mlx_loop(data->mlx);
 }
 
 
 int main(int argc, char **argv)
 {
 	t_map *res;
+	t_gparams	*params;
 	if (argc == 2)
 	{
 		res = read_map(argv[1]);
-		run_app(res);
+		params = prepare_params(res);
+		run_app(params);
 	}
 	return (0);
 }

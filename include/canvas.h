@@ -14,7 +14,7 @@ typedef struct	s_canvas
 	int		width;
 }				t_canvas;
 
-t_canvas	*init_canvas(void *mlx, void *window, int height, int width);
+t_canvas	*init_canvas(void *mlx, void *window, int width, int height);
 void		put_pixel(t_canvas *canv, int x, int y, int color);
 void		draw_canvas(t_canvas *canv, int x, int y);
 
