@@ -36,7 +36,7 @@ typedef struct	s_gparams
 }				t_gparams;
 
 t_gparams	*prepare_params(t_map *map);
-
+void		drop_params(t_gparams *data);
 
 # define W_WIDTH 1366
 # define W_HEIGHT 768
@@ -46,5 +46,4 @@ t_gparams	*prepare_params(t_map *map);
 #define YZ_PROJECTION 2
 #define XZ_PROJECTION 3
 
-# define DOUBLE_DELTA 0.000001
 #endif //FDF_PARAMS_H

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "point.h"
-#include "matrix_ops.h"
+#include "matrices.h"
 #include "params.h"
 #include <math.h>
 
@@ -32,8 +32,8 @@ void	project_point(int *x, int *y, t_point *point, t_gparams *data)
 	tmpx = tmp;
 	if (data->proj_type == ISO_PROJECTION)
 	{
-		*x = (int)((tmpx + tmpy) * cos(0.523599));
-		*y = (int)(-tmpz + (tmpx - tmpy) * sin(0.523599));
+		*x = (int)((tmpx - tmpy) * cos(0.523599));
+		*y = (int)(-tmpz + (tmpx + tmpy) * sin(0.523599));
 	}
 	else if (data->proj_type == XY_PROJECTION)
 	{

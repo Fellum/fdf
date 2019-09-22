@@ -3,11 +3,7 @@
 #include "point.h"
 #include "params.h"
 
-void	raise_error()
-{
-	printf("poshol nahoy\n");
-	exit(1);
-}
+void	raise_error();
 
 int		ft_atoi_base(char *str)
 {
@@ -130,7 +126,7 @@ void	calc_sizes(char *fname, int *cols, int *rows)
 t_map 	*init_map(int colls, int rows)
 {
 	t_map	*res;
-	size_t 	tmp;
+	int 	tmp;
 
 	res = malloc(sizeof(t_map));
 	res->colls = colls;
@@ -179,7 +175,6 @@ void	fill_map(char *fname, t_map *res, int cols)
 	cur_row = 0;
 	while (ft_get_next_line(fd, &line) == GNL_SUCCESS)
 	{
-		//one_space(line);
 		count = calc_words(line, ' ');
 		if(count != cols)
 			raise_error();

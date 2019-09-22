@@ -14,6 +14,6 @@ link_directories(/usr/local/lib)
 aux_source_directory(src srcs)
 
 add_executable(fdf ${srcs})
-target_link_libraries(fdf "-framework AppKit")
-target_link_libraries(fdf "-framework OpenGL")
+#target_link_libraries(fdf "-framework AppKit")
+#target_link_libraries(fdf "-framework OpenGL")
 target_link_libraries(fdf libft)

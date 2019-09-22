@@ -2,8 +2,8 @@
 // Created by Jasper Leann on 17/09/2019.
 //
 
-#ifndef FDF_MATRIX_OPS_H
-#define FDF_MATRIX_OPS_H
+#ifndef FDF_MATRICES_H
+#define FDF_MATRICES_H
 
 # define PI 3.14159265
 #define TO_RAD(a) (a / 180 * PI)
@@ -18,4 +18,4 @@ void	drop_matrix(double *matrix);
 double	*init_matrix();
 
 
-#endif //FDF_MATRIX_OPS_H
+#endif //FDF_MATRICES_H
