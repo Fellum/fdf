@@ -41,9 +41,10 @@ void		drop_params(t_gparams *data);
 t_map			*init_map(int colls, int rows);
 void			fill_row(t_map *res, char *line, int cur_row);
 void del_split(char **str);
+void	raise_error();
 
-# define W_WIDTH 1366
-# define W_HEIGHT 768
+# define W_WIDTH 2000
+# define W_HEIGHT 1500
 
 #define ISO_PROJECTION 0
 #define XY_PROJECTION 1

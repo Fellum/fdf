@@ -26,6 +26,7 @@ int draw_tick(t_gparams *param)
 	return (0);
 }
 
+
 int	close_event(t_gparams *param)
 {
 	(void)param;

@@ -20,6 +20,7 @@ void	x_rotation(double angle, double *x, double *y, double *z)
 {
 	double	tmp;
 
+	*x = *x;
 	tmp = *z;
 	*z = -*y * sin(TO_RAD(angle)) + *z * cos(TO_RAD(angle));
 	*y = *y * cos(TO_RAD(angle)) + tmp * sin(TO_RAD(angle));
@@ -29,6 +30,7 @@ void	y_rotation(double angle, double *x, double *y, double *z)
 {
 	double	tmp;
 
+	*y = *y;
 	tmp = *x;
 	*x = *x * cos(TO_RAD(angle)) + *z * sin(TO_RAD(angle));
 	*z = -tmp * sin(TO_RAD(angle)) +  *z * cos(TO_RAD(angle));
@@ -38,6 +40,7 @@ void	z_rotation(double angle, double *x, double *y, double *z)
 {
 	double	tmp;
 
+	*z = *z;
 	tmp = *x;
 	*x = *x * cos(TO_RAD(angle)) - *y * sin(TO_RAD(angle));
 	*y = tmp * sin(TO_RAD(angle)) + *y * cos(TO_RAD(angle));
