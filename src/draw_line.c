@@ -58,6 +58,6 @@ void	draw_line(t_gparams *data, t_point *from, t_point *to)
 	project_point(&x1, &y1, from, data);
 	project_point(&x2, &y2, to, data);
 
-	draw_line_2d(data->canvas, x1, y1, x2, y2, from->color);
+	draw_line_2d(data->canvas, x1, y1, x2, y2, to->color);
 }
 

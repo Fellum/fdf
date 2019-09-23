@@ -3,14 +3,14 @@
 
 void	draw_line(t_gparams *data, t_point *from, t_point *to);
 
-void	update_matrix(t_gparams *data)
-{
-	drop_matrix(data->tf_matrix);
-	add_scaling(data->tf_matrix, data->xy_scale, data->xy_scale, data->z_scale);
-
-	add_xrotation(data->tf_matrix, data->x_angle);
-	add_yrotation(data->tf_matrix, data->y_angle);
-}
+//void	update_matrix(t_gparams *data)
+//{
+//	drop_matrix(data->tf_matrix);
+//	//add_scaling(data->tf_matrix, data->xy_scale, data->xy_scale, data->z_scale);
+//
+//	//add_xrotation(data->tf_matrix, data->x_angle);
+//	//add_yrotation(data->tf_matrix, data->y_angle);
+//}
 
 void	draw_map(t_gparams *data)
 {

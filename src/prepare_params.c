@@ -14,13 +14,6 @@
 #include "ft_string.h"
 #include "matrices.h"
 
-void		translate_point(t_point *point, double x, double y, double z)
-{
-	point->x += x;
-	point->y += y;
-	point->z += z;
-}
-
 void		translate_map(t_gparams *params)
 {
 	int cur_x;
@@ -36,8 +29,8 @@ void		translate_map(t_gparams *params)
 		cur_x = 0;
 		while (cur_x < params->map->colls)
 		{
-			translate_point(params->map->map[cur_y] + cur_x,
-					-transx, -transy, 0);
+			params->map->map[cur_y][cur_x].x -= transx;
+			params->map->map[cur_y][cur_x].y -= transy;
 			cur_x++;
 		}
 		cur_y++;
@@ -62,6 +55,7 @@ t_gparams	*prepare_params(t_map *map)
 
 	res = ft_memalloc(sizeof(t_gparams));
 	ft_bzero(res, sizeof(t_gparams));
+	ft_bzero(res->kstate, 31);
 	res->width = W_WIDTH;
 	res->height = W_HEIGHT;
 	res->map = map;

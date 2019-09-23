@@ -8,8 +8,8 @@
 #include "params.h"
 
 int draw_tick(t_gparams *param);
-int	close_event(void *param);
-int	key_release(int keycode, void *param);
-int	key_press(int keycode, void *param);
+int	close_event(t_gparams *param);
+int	key_release(int keycode, t_gparams *param);
+int	key_press(int keycode, t_gparams *param);
 
 #endif //FDF_EVENTS_H

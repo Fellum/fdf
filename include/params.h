@@ -20,6 +20,8 @@ typedef struct	s_gparams
 	void		*mlx;
 	void		*wnd;
 	t_map		*map;
+	t_canvas	*canvas;
+	char		kstate[34];
 	int			height;
 	int 		width;
 	char		proj_type;
@@ -32,18 +34,18 @@ typedef struct	s_gparams
 	double 		xy_scale;
 	double 		z_scale;
 	double 		*tf_matrix;
-	t_canvas	*canvas;
 }				t_gparams;
 
 t_gparams	*prepare_params(t_map *map);
 void		drop_params(t_gparams *data);
+t_map			*init_map(int colls, int rows);
+void			fill_row(t_map *res, char *line, int cur_row);
+void del_split(char **str);
 
 # define W_WIDTH 1366
 # define W_HEIGHT 768
 
 #define ISO_PROJECTION 0
 #define XY_PROJECTION 1
-#define YZ_PROJECTION 2
-#define XZ_PROJECTION 3
 
 #endif //FDF_PARAMS_H

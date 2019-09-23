@@ -13,8 +13,8 @@ typedef struct	s_point
 
 t_point	*point_create(double x, double y, double z);
 void	translate_point(t_point *point, double x, double y, double z);
-void	x_rotation(double angle, t_point *point, t_point *around);
-void	y_rotation(double angle, t_point *point, t_point *around);
-void	z_rotation(double angle, t_point *point, t_point *around);
+//void	x_rotation(double angle, t_point *point, t_point *around);
+//void	y_rotation(double angle, t_point *point, t_point *around);
+//void	z_rotation(double angle, t_point *point, t_point *around);
 
 #endif

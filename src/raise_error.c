@@ -3,6 +3,6 @@
 
 void	raise_error()
 {
-	ft_printf("poshol nahoy\n");
+	ft_printf("Error\n");
 	exit(1);
 }

@@ -1,89 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_reader.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: blomo <blomo@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/09/23 13:31:07 by blomo             #+#    #+#             */
+/*   Updated: 2019/09/23 15:58:51 by blomo            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <fcntl.h>
 #include "ft_get_next_line.h"
 #include "point.h"
 #include "params.h"
 
-void	raise_error();
+void		raise_error();
 
-int		ft_atoi_base(char *str)
-{
-	int res;
-	int i;
-	int j;
-	
-	i = 0;
-	res = 0;
-	j = 1;
-	while(str[i])
-		i++;
-	i--;
-	while(i >= 0)
-	{
-		if (str[i] >= 'A' && str[i] <= 'F')
-			res = res + (str[i] - 'A' + 10) * j;
-		else if (str[i] >= 'a' && str[i] <= 'f')
-			res = res + (str[i] - 'a' + 10) * j;
-		else if (str[i] >= '0' && str[i] <= '9')
-			res = res + (str[i] - '0') * j;
-		j = j * 16;
-		i--;
-	}
-	return (res);
-}
-
-int		colors(char *str)
-{
-	int i;
-	
-	i = 0;
-	if(*str == '0')
-		str++;
-	else
-		return(0);
-	if(*str == 'x')
-		str++;
-	else
-		return(0);
-	while(str[i])
-	{
-		if(!((str[i] >= 'A' && str[i] <= 'F') || (str[i] >= 'a' && str[i] <= 'f') || (str[i] >= '0' && str[i] <= '9')))
-			return (0);
-		i++;
-	}
-	if(i > 8)
-		return(0);
-	return(ft_atoi_base(str));
-}
-
-int 	is_all_digits(char *str)
-{
-	int i;
-	int res;
-
-	res = 0;
-	i = 0;
-	if(str[0] == '-')
-	{
-		if(str[1] >= '0' && str[1] <= '9')
-			i = 2;
-		else
-			return (0);
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-		i++;
-	if(str[i] == '\0')
-		return (0xFFFFFF);
-	if(str[i] == ',')
-	{
-		res = colors(str + i + 1);
-			return (res);
-	}
-	else
-		return(0);
-	return (0xFFFFFF);
-}
-
-size_t	calc_words(char const *s, char c)
+size_t		calc_words(char const *s, char c)
 {
 	size_t	res;
 	size_t	cur;
@@ -104,71 +38,37 @@ size_t	calc_words(char const *s, char c)
 	return (res);
 }
 
-void	calc_sizes(char *fname, int *cols, int *rows)
+void		calc_sizes(char *fname, int *cols, int *rows)
 {
-	int	fd;
-	char *line;
+	int		fd;
+	char	*line;
 
 	if ((fd = open(fname, O_RDONLY)) < 0)
 		raise_error();
 	if (ft_get_next_line(fd, &line) != GNL_SUCCESS)
 		raise_error();
-	if(ft_strlen(line) == 0)
+	if (ft_strlen(line) == 0)
+	{
+		free(line);
 		raise_error();
-	//ft_get_next_line(fd, &line);
+	}
 	*cols = calc_words(line, ' ');
+	free(line);
 	*rows = 1;
 	while (ft_get_next_line(fd, &line) == GNL_SUCCESS)
+	{
+		free(line);
 		(*rows)++;
+	}
 	close(fd);
 }
 
-t_map 	*init_map(int colls, int rows)
+void		fill_map(char *fname, t_map *res, int cols)
 {
-	t_map	*res;
-	int 	tmp;
-
-	res = malloc(sizeof(t_map));
-	res->colls = colls;
-	res->rows = rows;
-	res->map = malloc(sizeof(t_point *) * rows);
-	tmp = 0;
-	while (tmp < rows)
-	{
-		res->map[tmp] = malloc((sizeof(t_point) * colls));
-		tmp++;
-	}
-	return (res);
-}
-
-void	fill_row(t_map *res, char *line, int cur_row)
-{
-	char **tmp;
-	int cur;
-	int color;
-
-	tmp = ft_strsplit(line, ' ');
-	cur = 0;
-	while (tmp[cur])
-	{
-		if (!(color = is_all_digits(tmp[cur])))
-			raise_error();
-		if (cur >= res->colls)
-			raise_error();
-		res->map[cur_row][cur].z = ft_atoi(tmp[cur]);
-		res->map[cur_row][cur].x = cur;
-		res->map[cur_row][cur].y = cur_row;
-		res->map[cur_row][cur].color = color;
-		cur++;
-	}
-}
-
-void	fill_map(char *fname, t_map *res, int cols)
-{
-	int	fd;
-	char *line;
-	int	cur_row;
-	int count;
+	int		fd;
+	char	*line;
+	int		cur_row;
+	int		count;
 
 	if ((fd = open(fname, O_RDONLY)) < 0)
 		raise_error();
@@ -176,8 +76,12 @@ void	fill_map(char *fname, t_map *res, int cols)
 	while (ft_get_next_line(fd, &line) == GNL_SUCCESS)
 	{
 		count = calc_words(line, ' ');
-		if(count != cols)
+		if (count != cols)
+		{
+			free(line);
+			free(res);
 			raise_error();
+		}
 		fill_row(res, line, cur_row);
 		free(line);
 		cur_row++;
@@ -185,11 +89,12 @@ void	fill_map(char *fname, t_map *res, int cols)
 	close(fd);
 }
 
-t_map	*read_map(char *fname)
+t_map		*read_map(char *fname)
 {
 	t_map	*res;
-	int	col_len;
-	int row_len;
+	int		col_len;
+	int		row_len;
+
 	calc_sizes(fname, &col_len, &row_len);
 	res = init_map(col_len, row_len);
 	fill_map(fname, res, col_len);
